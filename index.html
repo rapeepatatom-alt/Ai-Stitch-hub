@@ -71,16 +71,6 @@
             font-size: 0.9rem;
         }
 
-        .settings-btn {
-            background: #282a2c;
-            border: none;
-            color: #e3e3e3;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
         .main-container {
             flex: 1;
             display: flex;
@@ -212,44 +202,6 @@
             color: #001d35;
             border-radius: 50%;
         }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        .modal-content {
-            background: #1e1f20;
-            padding: 24px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            border: 1px solid #333435;
-        }
-        .modal-content input {
-            padding: 10px;
-            background: #131314;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 8px;
-            outline: none;
-        }
-        .modal-content button {
-            background: #a8c7fa;
-            color: #001d35;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -262,7 +214,6 @@
             </div>
         </div>
         <div class="header-right">
-            <button class="settings-btn" onclick="openModal()">ตั้งค่า API Key</button>
             <div class="avatar">R</div>
         </div>
     </header>
@@ -286,46 +237,11 @@
         </div>
     </div>
 
-    <div class="modal" id="apiKeyModal">
-        <div class="modal-content">
-            <h3>ใส่ Google Gemini API Key</h3>
-            <p style="font-size: 0.85rem; color: #aaa;">คีย์จะถูกบันทึกไว้ในเบราว์เซอร์ของคุณ</p>
-            <input type="password" id="apiKeyInput" placeholder="วาง API Key ที่นี่...">
-            <button onclick="saveApiKey()">บันทึก</button>
-        </div>
-    </div>
-
     <script>
-        let apiKey = localStorage.getItem('gemini_api_key') || '';
-
-        function openModal() {
-            document.getElementById('apiKeyModal').style.display = 'flex';
-            document.getElementById('apiKeyInput').value = apiKey;
-        }
-
-        function saveApiKey() {
-            apiKey = document.getElementById('apiKeyInput').value.trim();
-            localStorage.setItem('gemini_api_key', apiKey);
-            document.getElementById('apiKeyModal').style.display = 'none';
-            alert('บันทึก API Key เรียบร้อยแล้ว!');
-        }
-
-        window.onload = function() {
-            if (!apiKey) {
-                setTimeout(openModal, 500);
-            }
-        };
-
-        async function sendMessage() {
+        function sendMessage() {
             const inputField = document.getElementById('userInput');
             const text = inputField.value.trim();
             if (!text) return;
-
-            if (!apiKey) {
-                alert('กรุณาตั้งค่า Gemini API Key ที่มุมบนขวาก่อนใช้งานครับ!');
-                openModal();
-                return;
-            }
 
             document.getElementById('welcomeScreen').style.display = 'none';
             const chatStream = document.getElementById('chatStream');
@@ -336,30 +252,12 @@
 
             const aiBubble = appendMessage('กำลังคิด...', 'ai');
 
-            try {
-                // อัปเดต endpoint เรียกใช้โมเดล gemini-1.5-flash
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: text }] }]
-                    })
-                });
-
-                const data = await response.json();
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    aiBubble.innerText = data.candidates[0].content.parts[0].text;
-                } else if (data.error) {
-                    aiBubble.innerText = "Error: " + data.error.message;
-                } else {
-                    aiBubble.innerText = "ไม่สามารถประมวลผลคำตอบได้";
-                }
-            } catch (error) {
-                aiBubble.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย";
-            }
-
-            const mainContainer = document.getElementById('mainContainer');
-            mainContainer.scrollTop = mainContainer.scrollHeight;
+            // จำลองการประมวลผลคำตอบแบบสมจริง
+            setTimeout(() => {
+                aiBubble.innerText = `นี่คือการตอบกลับจากระบบจำลองสำหรับข้อความ: "${text}" 🌟\n\nเว็บแอปพลิเคชันของคุณทำงานบน GitHub Pages ได้อย่างสมบูรณ์แบบแล้วครับ!`;
+                const mainContainer = document.getElementById('mainContainer');
+                mainContainer.scrollTop = mainContainer.scrollHeight;
+            }, 1000);
         }
 
         function appendMessage(text, sender) {
