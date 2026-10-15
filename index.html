@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot - เว็บ AI ของฉัน</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .chat-container { width: 100%; max-width: 600px; height: 90vh; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        .chat-header { background: #007bff; color: white; padding: 15px 20px; text-align: center; font-size: 1.2rem; font-weight: bold; }
+        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .message { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 0.95rem; line-height: 1.4; word-wrap: break-word; }
+        .user-message { align-self: flex-end; background-color: #007bff; color: white; border-bottom-right-radius: 4px; }
+        .bot-message { align-self: flex-start; background-color: #e9ecef; color: #333; border-bottom-left-radius: 4px; }
+        .input-area { display: flex; padding: 15px; border-top: 1px solid #ddd; background: #fff; }
+        input[type="text"] { flex: 1; padding: 12px 15px; border: 1px solid #ccc; border-radius: 25px; outline: none; font-size: 1rem; }
+        button { margin-left: 10px; padding: 12px 20px; background-color: #007bff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">🤖 AI Assistant</div>
+        <div class="chat-box" id="chatBox">
+            <div class="message bot-message">สวัสดีครับ! เว็บ AI ของคุณพร้อมใช้งานแล้ว</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key==='Enter')sendMessage()">
+            <button onclick="sendMessage()">ส่ง</button>
+        </div>
+    </div>
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const box = document.getElementById('chatBox');
+            if (!input.value.trim()) return;
+            
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.innerText = input.value;
+            box.appendChild(userDiv);
+            
+            const text = input.value;
+            input.value = '';
+            
+            setTimeout(() => {
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                botDiv.innerText = "AI ตอบกลับ: " + text;
+                box.appendChild(botDiv);
+                box.scrollTop = box.scrollHeight;
+            }, 500);
+            box.scrollTop = box.scrollHeight;
+        }
+    </script>
+</body>
+</html>
